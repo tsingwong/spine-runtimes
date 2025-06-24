@@ -35,6 +35,8 @@ import { HasTextureRegion } from "./HasTextureRegion.js";
 import { Sequence } from "./Sequence.js";
 import { Slot } from "../Slot.js";
 
+import structuredClone from '@ungap/structured-clone';
+
 /** An attachment that displays a textured mesh. A mesh has hull vertices and internal vertices within the hull. Holes are not
  * supported. Each vertex has UVs (texture coordinates) and triangles are used to map an image on to the mesh.
  *
@@ -174,20 +176,16 @@ export class MeshAttachment extends VertexAttachment implements HasTextureRegion
 		copy.color.setFromColor(this.color);
 
 		this.copyTo(copy);
-		copy.regionUVs = new Array<number>(this.regionUVs.length);
-		Utils.arrayCopy(this.regionUVs, 0, copy.regionUVs, 0, this.regionUVs.length);
-		copy.uvs = new Array<number>(this.uvs.length);
-		Utils.arrayCopy(this.uvs, 0, copy.uvs, 0, this.uvs.length);
-		copy.triangles = new Array<number>(this.triangles.length);
-		Utils.arrayCopy(this.triangles, 0, copy.triangles, 0, this.triangles.length);
+		copy.regionUVs = structuredClone(this.regionUVs)
+		copy.uvs = structuredClone(this.uvs)
+		copy.triangles = structuredClone(this.triangles)
 		copy.hullLength = this.hullLength;
 
 		copy.sequence = this.sequence != null ? this.sequence.copy() : null;
 
 		// Nonessential.
 		if (this.edges) {
-			copy.edges = new Array<number>(this.edges.length);
-			Utils.arrayCopy(this.edges, 0, copy.edges, 0, this.edges.length);
+			copy.edges = structuredClone(this.edges)
 		}
 		copy.width = this.width;
 		copy.height = this.height;
